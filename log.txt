@@ -1,3 +1,0 @@
-nohup: ignoring input
-Server is running on http://localhost:80
-Connected to the database
