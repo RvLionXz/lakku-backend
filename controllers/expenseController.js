@@ -100,33 +100,111 @@ exports.delete = (req, res) => {
   );
 };
 
-// Get monthly total expenses for each user
-exports.getMonthlyExpenses = (req, res) => {
+// Get monthly total expenses for a specific user
+exports.getMonthlyExpensesByUser = (req, res) => {
+  const { id_user } = req.params;
+
+  if (!id_user) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
   const sql = `
     SELECT 
-      id_user, 
-      DATE_FORMAT(MIN(date), '%M %Y') AS bulan, 
-      SUM(amount) AS total_pengeluaran 
+      YEAR(date) AS year,
+      MONTH(date) AS month,
+      CONCAT(MONTHNAME(MIN(date)), ' ', YEAR(MIN(date))) AS month_name,
+      SUM(amount) AS total_amount 
     FROM 
       expenses 
+    WHERE 
+      id_user = ? 
     GROUP BY 
-      id_user, YEAR(date), MONTH(date) 
+      YEAR(date), MONTH(date) 
     ORDER BY 
-      id_user, YEAR(date), MONTH(date)
+      YEAR(date) DESC, MONTH(date) DESC
   `;
 
-  db.query(sql, (err, results) => {
+  db.query(sql, [id_user], (err, results) => {
     if (err) {
       console.error("Error getting monthly expenses: ", err.message);
       return res.status(500).json({ error: err.message });
     }
 
-    // Periksa apakah ada data yang ditemukan
+    // Check if data exists
     if (results && results.length > 0) {
       res.json(results);
     } else {
-      res.status(404).json({ message: "Tidak ada data pengeluaran bulan ini." });
+      res.json([]); // Return empty array instead of 404 error
     }
   });
 };
 
+// Get monthly total expenses for all users (admin function)
+exports.getAllMonthlyExpenses = (req, res) => {
+  const sql = `
+    SELECT 
+      id_user,
+      YEAR(date) AS year,
+      MONTH(date) AS month,
+      CONCAT(MONTHNAME(MIN(date)), ' ', YEAR(MIN(date))) AS month_name,
+      SUM(amount) AS total_amount 
+    FROM 
+      expenses 
+    GROUP BY 
+      id_user, YEAR(date), MONTH(date) 
+    ORDER BY 
+      id_user, YEAR(date) DESC, MONTH(date) DESC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error getting all monthly expenses: ", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results && results.length > 0) {
+      res.json(results);
+    } else {
+      res.json([]);
+    }
+  });
+};
+
+// Get monthly expenses by category for a specific user
+exports.getMonthlyExpensesByCategory = (req, res) => {
+  const { id_user } = req.params;
+
+  if (!id_user) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  const sql = `
+    SELECT 
+      YEAR(date) AS year,
+      MONTH(date) AS month,
+      CONCAT(MONTHNAME(MIN(date)), ' ', YEAR(MIN(date))) AS month_name,
+      category,
+      SUM(amount) AS total_amount 
+    FROM 
+      expenses 
+    WHERE 
+      id_user = ? 
+    GROUP BY 
+      YEAR(date), MONTH(date), category
+    ORDER BY 
+      YEAR(date) DESC, MONTH(date) DESC, category
+  `;
+
+  db.query(sql, [id_user], (err, results) => {
+    if (err) {
+      console.error("Error getting monthly expenses by category: ", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results && results.length > 0) {
+      res.json(results);
+    } else {
+      res.json([]);
+    }
+  });
+};

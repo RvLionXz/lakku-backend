@@ -8,14 +8,22 @@ router.get('/', expenseController.getExpenses);
 // Route untuk menambah pengeluaran
 router.post('/', expenseController.addExpense);
 
-// Tambahkan route baru untuk mendapatkan total saldo berdasarkan id_user
+// Route untuk mendapatkan total saldo berdasarkan id_user
 router.get('/total/:id_user', expenseController.getTotalBalance);
 
-router.get('/:id_user', expenseController.getExpensesByUser);
+// Route untuk mendapatkan semua pengeluaran berdasarkan id_user
+router.get('/user/:id_user', expenseController.getExpensesByUser);
 
+// Route untuk menghapus pengeluaran berdasarkan id_expenses
 router.delete('/:id_expenses', expenseController.delete);
 
-router.get('/monthly', expenseController.getMonthlyExpenses);
+// Route untuk mendapatkan pengeluaran bulanan berdasarkan id_user
+router.get('/monthly/user/:id_user', expenseController.getMonthlyExpensesByUser);
+
+// Route untuk mendapatkan semua pengeluaran bulanan (untuk admin)
+router.get('/monthly/all', expenseController.getAllMonthlyExpenses);
+
+// Route untuk mendapatkan pengeluaran bulanan berdasarkan kategori dan id_user
+router.get('/monthly/category/:id_user', expenseController.getMonthlyExpensesByCategory);
 
 module.exports = router;
-
