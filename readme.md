@@ -1,114 +1,264 @@
-# 💸 Lakku Backend — Expense Tracker API
+# Lakku - Expense Tracker Application
 
-> Backend sederhana berbasis Node.js + MySQL  
-> Untuk aplikasi pengelolaan **pengeluaran bulanan** berdasarkan **user, kategori, dan pengeluaran**.
+## Overview
 
----
+Lakku is a comprehensive expense tracking application that helps users monitor and manage their personal finances. The name "Lakku" comes from "Laporan Keuanganku" (My Financial Report), reflecting its purpose as a personal financial management tool. The application consists of a Flutter mobile frontend and a Node.js backend API.
 
-## 📂 Struktur Folder
+## Features
 
-lakku-backend/ ├── app.js # Entry point server Express ├── db.js # Koneksi database MySQL (SSL) ├── controllers/ # Logic pengolahan data ├── routes/ # Endpoint router └── README.md # Dokumentasi project
+- **User Authentication**: Secure login and registration system
+- **Expense Recording**: Easily add new expenses with categories, descriptions, and amounts
+- **Monthly Summaries**: View expenses summarized by month
+- **Category Tracking**: Record expenses across different categories (Food, Transportation, Others)
+- **Expense History**: Access a chronological list of all recorded expenses
+- **Visual Analytics**: View spending patterns through intuitive pie charts
+- **User Profiles**: Manage personal information
 
-yaml
-Copy
-Edit
+## Project Structure
 
----
+```
+LAKKU/
+├── frontend/          # Flutter mobile application
+└── backend/
+    ├── controllers/
+    │   ├── categoryController.js
+    │   ├── expenseController.js
+    │   └── userController.js
+    ├── routes/
+    │   ├── categoryRoutes.js
+    │   ├── expenseRoutes.js
+    │   └── userRoutes.js
+    ├── .env
+    ├── app.js
+    ├── ca.pem
+    ├── db.js
+    ├── package.json
+    └── package-lock.json
+```
 
-## 💡 Database Structure
+## Technology Stack
 
-### users
-| Field    | Type           | Keterangan               |
-|----------|----------------|---------------------------|
-| id_user  | int            | Primary Key, Auto Increment |
-| username | varchar(100)   | Nama pengguna            |
-| email    | varchar(100)   | Email user                |
-| password | varchar(255)   | Password user             |
+### Frontend
+- **Framework**: Flutter for cross-platform mobile development
+- **Language**: Dart
+- **State Management**: Provider/Bloc (specify which one you're using)
+- **HTTP Client**: Dart http package for API communication
 
-### categories
-| Field       | Type           | Keterangan               |
-|-------------|----------------|---------------------------|
-| id_category | int            | Primary Key, Auto Increment |
-| name        | varchar(100)   | Nama kategori            |
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MySQL
+- **Libraries**: 
+  - moment-timezone for date handling
+  - mysql2 for database connection
 
-### expenses
-| Field       | Type              | Keterangan               |
-|-------------|--------------------|---------------------------|
-| id_expenses | int                | Primary Key, Auto Increment |
-| id_user     | int                | Foreign Key ke `users`     |
-| id_category | int                | Foreign Key ke `categories`|
-| description | varchar(255)       | Deskripsi pengeluaran      |
-| amount      | decimal(10,2)      | Nominal pengeluaran        |
-| date        | date               | Tanggal transaksi          |
+## Setup and Installation
 
----
+### Prerequisites
+- Node.js (v14 or higher)
+- MySQL database
+- Flutter SDK (latest stable version)
+- Android Studio or VS Code with Flutter extensions
+- An Android or iOS device/emulator for testing
 
-## 🔌 API Endpoint
+### Backend Setup
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/lakku.git
+   cd lakku/backend
 
-### 🧑 User
+2. Install dependencies
+   npm install
 
-| Method | URL              | Body JSON                                 | Keterangan              |
-|--------|-------------------|-------------------------------------------|--------------------------|
-| POST   | `/users/register` | `{ "username": "", "email": "", "password": "" }` | Registrasi user baru     |
-| POST   | `/users/login`    | `{ "email": "", "password": "" }`         | Login user               |
-| GET    | `/users`          | -                                         | Ambil semua data user    |
+3. Configure database connection
 
----
+- Create a `.env` file in the root directory with your database credentials
+- Or modify the `db.js` file directly
 
-### 📁 Category
+4. Start the server
+   npm start
 
-| Method | URL             | Body JSON                          | Keterangan           |
-|--------|------------------|------------------------------------|-----------------------|
-| GET    | `/categories`    | -                                  | Ambil semua kategori  |
-| POST   | `/categories`    | `{ "name": "" }`                   | Tambah kategori baru  |
+## API Endpoints
 
----
+### User Management
 
-### 💵 Expense
+#### Register a new user
 
-| Method | URL            | Body JSON                                                                | Keterangan               |
-|--------|-----------------|--------------------------------------------------------------------------|---------------------------|
-| GET    | `/expenses`     | -                                                                        | Ambil semua pengeluaran   |
-| POST   | `/expenses`     | `{ "id_user":1, "id_category":1, "description":"", "amount":10000, "date":"2025-04-14" }` | Tambah pengeluaran baru |
+- **URL**: `/users/register`
+- **Method**: `POST`
+- **Body**:
+  {
+  "username": "string",
+  "email": "string",
+  "password": "string"
+  }
 
----
+#### User login
 
-## ⚙️ Cara Menjalankan
+- **URL**: `/users/login`
+- **Method**: `POST`
+- **Body**:
+  {
+  "email": "string",
+  "password": "string"
+  }
 
-1. Clone project:
-```bash
-git clone <repository-url>
-Install dependency:
+  #### Get all users
 
-bash
-Copy
-Edit
-npm install
-Pastikan file ca.pem SSL dari Aiven MySQL ada di root folder.
+- **URL**: `/users`
+- **Method**: `GET`
 
-Jalankan server:
 
-bash
-Copy
-Edit
-node app.js
-Server berjalan di:
+### Category Management
 
-arduino
-Copy
-Edit
-http://localhost:3000
-🔐 Catatan
-Login tanpa JWT, hanya verifikasi email dan password.
+#### Get all categories
 
-Database terhubung dengan SSL Aiven MySQL.
+- **URL**: `/categories`
+- **Method**: `GET`
 
-Cocok untuk dipakai aplikasi mobile (Flutter) atau frontend web (React/Vue).
 
-❤️ Credit
-Dibuat oleh:
+#### Add a new category
 
-Backend: GPT-40
+- **URL**: `/categories`
+- **Method**: `POST`
+- **Body**:
+  {
+  "name": "string"
+  }
 
-Frontend: RvLionXz
+### Expense Management
 
+#### Get all expenses
+
+- **URL**: `/expenses`
+- **Method**: `GET`
+
+
+#### Add a new expense
+
+- **URL**: `/expenses`
+- **Method**: `POST`
+- **Body**:
+  {
+  "id_user": "number",
+  "category": "string",
+  "description": "string",
+  "amount": "number"
+ }
+
+ #### Get total balance for a user
+
+- **URL**: `/expenses/total/:id_user`
+- **Method**: `GET`
+
+
+#### Get expenses by user ID
+
+- **URL**: `/expenses/user/:id_user`
+- **Method**: `GET`
+
+
+#### Delete an expense
+
+- **URL**: `/expenses/:id_expenses`
+- **Method**: `DELETE`
+
+
+#### Get monthly expenses for a user
+
+- **URL**: `/expenses/monthly/user/:id_user`
+- **Method**: `GET`
+
+
+#### Get all monthly expenses (admin)
+
+- **URL**: `/expenses/monthly/all`
+- **Method**: `GET`
+
+
+#### Get monthly expenses by category for a user
+
+- **URL**: `/expenses/monthly/category/:id_user`
+- **Method**: `GET`
+
+
+## Database Schema
+
+### Users Table
+CREATE TABLE users (
+  id_user INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100),
+  email VARCHAR(100),
+  password VARCHAR(255)
+);
+
+## Categories Table
+CREATE TABLE categories (
+  id_category INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100)
+);
+
+## Expenses Table
+CREATE TABLE expenses (
+  id_expenses INT AUTO_INCREMENT PRIMARY KEY,
+  id_user INT,
+  category ENUM('Makanan', 'Transportasi', 'Lainnya'),
+  description VARCHAR(255),
+  amount DECIMAL(10,2),
+  date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_user) REFERENCES users(id_user)
+);
+
+## Security Considerations
+
+- The current implementation stores passwords in plain text. In a production environment, passwords should be hashed using bcrypt or a similar library.
+- Consider implementing JWT for authentication.
+- Add input validation and sanitization to prevent SQL injection.
+- Implement rate limiting to prevent abuse.
+
+
+## Future Enhancements
+
+- Budget planning and tracking
+- Income tracking
+- Financial goals setting
+- Export reports as PDF
+- Multi-currency support
+- Cloud synchronization
+- Push notifications for budget alerts
+
+## Development
+
+### Running Backend in Development Mode
+npm run dev
+
+## Running Tests
+npm test
+
+## Deployment
+
+### Backend Deployment
+
+The API can be deployed to any Node.js hosting service such as:
+
+- Heroku
+- DigitalOcean
+- AWS Elastic Beanstalk
+- Vercel
+
+
+### Mobile App Deployment
+
+The Flutter app can be deployed to:
+
+- Google Play Store
+- Apple App Store
+
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
