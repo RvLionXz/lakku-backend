@@ -64,7 +64,7 @@ LAKKU/
 ### Backend Setup
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/lakku.git
+   git clone https://github.com/RvLionXz/lakku-backend
    cd lakku/backend
 
 2. Install dependencies
