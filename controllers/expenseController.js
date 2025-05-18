@@ -50,7 +50,7 @@ exports.getTotalBalance = (req, res) => {
   const { id_user } = req.params;
 
   db.query(
-    'SELECT SUM(amount) AS total FROM expenses WHERE id_user = ?',
+    'SELECT SUM(amount) AS total FROM expenses WHERE id_user = ? AND MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE());',
     [id_user],
     (err, results) => {
       if (err) {
@@ -209,3 +209,32 @@ exports.getMonthlyExpensesByCategory = (req, res) => {
   });
 };
 
+// Get current month's expenses for a specific user
+exports.getCurrentMonthExpensesByUser = (req, res) => {
+  const { id_user } = req.params;
+  if (!id_user) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  // Tentukan range tanggal bulan ini (Asia/Jakarta)
+  const startOfMonth = moment().tz('Asia/Jakarta').startOf('month').format('YYYY-MM-DD HH:mm:ss');
+  const endOfMonth   = moment().tz('Asia/Jakarta').endOf('month').format('YYYY-MM-DD HH:mm:ss');
+
+  const sql = `
+    SELECT *
+    FROM expenses
+    WHERE id_user = ?
+      AND date BETWEEN ? AND ?
+    ORDER BY date DESC
+  `;
+  const values = [id_user, startOfMonth, endOfMonth];
+
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      console.error("Error getting this month's expenses: ", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    // Kalau mau kembalikan array kosong kalau tidak ada data
+    res.json(results || []);
+  });
+};

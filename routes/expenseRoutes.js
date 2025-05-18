@@ -12,7 +12,9 @@ router.post('/', expenseController.addExpense);
 router.get('/total/:id_user', expenseController.getTotalBalance);
 
 // Route untuk mendapatkan semua pengeluaran berdasarkan id_user
-router.get('/user/:id_user', expenseController.getExpensesByUser);
+router.get('/user/:id_user/all', expenseController.getExpensesByUser);
+
+router.get('/user/:id_user/monthly', expenseController.getCurrentMonthExpensesByUser);
 
 // Route untuk menghapus pengeluaran berdasarkan id_expenses
 router.delete('/:id_expenses', expenseController.delete);
@@ -25,5 +27,7 @@ router.get('/monthly/all', expenseController.getAllMonthlyExpenses);
 
 // Route untuk mendapatkan pengeluaran bulanan berdasarkan kategori dan id_user
 router.get('/monthly/category/:id_user', expenseController.getMonthlyExpensesByCategory);
+
+// Route untuk mendapatkan pengeluaran bulanan 
 
 module.exports = router;
