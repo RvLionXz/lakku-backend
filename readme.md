@@ -148,13 +148,19 @@ LAKKU/
 
  #### Get total balance for a user
 
-- **URL**: `/expenses/total/:id_user`
+- **URL**: `/expenses/total/:id_user/all`
 - **Method**: `GET`
 
 
-#### Get expenses by user ID
+#### Get all expenses by user ID
 
-- **URL**: `/expenses/user/:id_user`
+- **URL**: `/expenses/user/:id_user/all`
+- **Method**: `GET`
+
+
+#### Get monthly expenses by user ID 
+
+- **URL**: `/expenses/user/:id_user/monthly`
 - **Method**: `GET`
 
 
