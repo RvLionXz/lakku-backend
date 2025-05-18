@@ -24,9 +24,3 @@ jobs:
 
       - name: Run unit tests
         run: npm test
-
-      - name: Check psql
-        run: psql --version
-
-      - name: Check pm2
-        run: pm2 -v
